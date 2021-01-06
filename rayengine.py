@@ -85,7 +85,7 @@ def cast_ray(ray: Ray, shapes: list) -> str:
             impact = cur_impact
             shape = cur_shape
 
-    color = "white"
+    color = "#FFFFFF"
     if shape is not None:
         color = get_color(shape.color, distance)
 
@@ -93,4 +93,7 @@ def cast_ray(ray: Ray, shapes: list) -> str:
 
 
 def get_color(color, distance):
+    r, g, b = map(lambda x: int(x, 16), (color[1: 3], color[3: 5], color[5: 7]))
+    r, g, b = map(lambda x: min(255, int(x * (1 - (distance - 800.0) / 50.0))), (r, g, b))
+    color = '#' + '{:02x}'.format(r) + '{:02x}'.format(g) + '{:02x}'.format(b)
     return color
