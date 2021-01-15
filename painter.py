@@ -31,6 +31,7 @@ while running:
     drw = 0.0
     for x in range(WIDTH):
         for y in range(HEIGHT):
+            start_time = time.time()
             for i in range(2):
                 ray = Ray(Coordinate(100.0, 100.0, -800.0), Coordinate(x - 100.0, y - 100.0, 800.0))
             cr += time.time() - start_time
