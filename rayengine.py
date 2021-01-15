@@ -87,13 +87,15 @@ def cast_ray(ray: Ray, shapes: list) -> str:
 
     color = "#FFFFFF"
     if shape is not None:
-        color = get_color(shape.color, distance)
+        color = get_color(shape.color, impact, distance)
 
     return color
 
 
-def get_color(color, distance):
+def get_color(color, impact, distance):
     r, g, b = map(lambda x: int(x, 16), (color[1: 3], color[3: 5], color[5: 7]))
-    r, g, b = map(lambda x: min(255, int(x * (1 - (distance - 800.0) / 50.0))), (r, g, b))
+    lighter = Coordinate(300.0, 0.0, -300.0)
+    distance = distance_between(impact, lighter)
+    r, g, b = map(lambda x: min(255, max(0, int(x * (1 - (distance - 240.0) / 200.0)))), (r, g, b))
     color = '#' + '{:02x}'.format(r) + '{:02x}'.format(g) + '{:02x}'.format(b)
     return color
