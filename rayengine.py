@@ -1,34 +1,34 @@
 class Coordinate:
     def __init__(self, x: float, y: float, z: float):
-        self.x = x
-        self.y = y
-        self.z = z
+        self[0] = x
+        self[1] = y
+        self[2] = z
 
 
 class Ray:
-    def __init__(self, point: Coordinate, vector: Coordinate):
+    def __init__(self, point, vector):
         self.point = point
         self.vector = vector
 
 
 class Figure:
-    def __init__(self, center: Coordinate, color):
+    def __init__(self, center, color):
         self.center = center
         self.color = color
 
 
 class Sphere(Figure):
-    def __init__(self, center: Coordinate, color, radius: float):
+    def __init__(self, center, color, radius: float):
         super().__init__(center, color)
         self.radius = radius
 
     def intersect(self, ray: Ray) -> (Coordinate, float):
-        x0 = ray.point.x - self.center.x
-        y0 = ray.point.y - self.center.y
-        z0 = ray.point.z - self.center.z
+        x0 = ray.point[0] - self.center[0]
+        y0 = ray.point[1] - self.center[1]
+        z0 = ray.point[2] - self.center[2]
 
-        a = ray.vector.x ** 2 + ray.vector.y ** 2 + ray.vector.z ** 2
-        b = 2 * (ray.vector.x * x0 + ray.vector.y * y0 + ray.vector.z * z0)
+        a = ray.vector[0] ** 2 + ray.vector[1] ** 2 + ray.vector[2] ** 2
+        b = 2 * (ray.vector[0] * x0 + ray.vector[1] * y0 + ray.vector[2] * z0)
         c = x0 ** 2 + y0 ** 2 + z0 ** 2 - self.radius ** 2
         d = b ** 2 - 4 * a * c
 
@@ -38,12 +38,12 @@ class Sphere(Figure):
         t1 = (-b + d ** 0.5) / (2 * a)
         t2 = (-b - d ** 0.5) / (2 * a)
 
-        p1 = Coordinate(ray.vector.x * t1 + ray.point.x,
-                        ray.vector.y * t1 + ray.point.y,
-                        ray.vector.z * t1 + ray.point.z)
-        p2 = Coordinate(ray.vector.x * t2 + ray.point.x,
-                        ray.vector.y * t2 + ray.point.y,
-                        ray.vector.z * t2 + ray.point.z)
+        p1 = (ray.vector[0] * t1 + ray.point[0],
+              ray.vector[1] * t1 + ray.point[1],
+              ray.vector[2] * t1 + ray.point[2])
+        p2 = (ray.vector[0] * t2 + ray.point[0],
+              ray.vector[1] * t2 + ray.point[1],
+              ray.vector[2] * t2 + ray.point[2])
 
         dist1 = distance_between(ray.point, p1)
         dist2 = distance_between(ray.point, p2)
@@ -62,7 +62,7 @@ class Sphere(Figure):
 
 
 class Rectangle(Figure):
-    def __init__(self, center: Coordinate, color, size: Coordinate):
+    def __init__(self, center, color, size):
         super().__init__(center, color)
         self.size = size
 
@@ -70,8 +70,8 @@ class Rectangle(Figure):
         pass
 
 
-def distance_between(p1: Coordinate, p2: Coordinate) -> float:
-    return ((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2 + (p1.z - p2.z) ** 2) ** 0.5
+def distance_between(p1, p2) -> float:
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2) ** 0.5
 
 
 def cast_ray(ray: Ray, shapes: list) -> str:
@@ -94,7 +94,7 @@ def cast_ray(ray: Ray, shapes: list) -> str:
 
 def get_color(color, impact, distance):
     r, g, b = map(lambda x: int(x, 16), (color[1: 3], color[3: 5], color[5: 7]))
-    lighter = Coordinate(300.0, 0.0, -300.0)
+    lighter = (300.0, 0.0, -300.0)
     distance = distance_between(impact, lighter)
     r, g, b = map(lambda x: min(255, max(0, int(x * (1 - (distance - 240.0) / 200.0)))), (r, g, b))
     color = '#' + '{:02x}'.format(r) + '{:02x}'.format(g) + '{:02x}'.format(b)
